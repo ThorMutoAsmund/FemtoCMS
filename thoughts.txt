@@ -1,0 +1,5 @@
+Multi channel (multiple inputs). Separation between content and presentation
+
+Protected content (use firebase for auhtentication)
+
+Language support

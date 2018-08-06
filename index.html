@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width,maximum-scale=2">
+  <meta name="description" content="spanav demo">
+  <title>SPANAV - Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="content">
+      <div class="header_wrap">
+        <header class="header_wrap_inner">
+          <h1 class="project_title">SPANAV demo</h1>
+          <h2 id="tagline" class="project_tagline">Front page</h2>
+        </header>
+      </div>
+      <div class="main_content_wrap">
+        <div class="menu-content">
+          <span id="menu_index"><a href="#">Welcome</a></span><span id="menu_about"><a href="#about">About</a></span><span id="menu_disclaimer"><a href="#disclaimer">Disclaimer</a></span>
+        </div>
+        <section id="page_404" class="main-content hidden">
+            <h2>404 Page Not Found</h2>
+            <p>Go back to the <a href="#">front page</a> and try again!</p>
+        </section>
+        <section id="page_index" class="main-content hidden">
+          <h2>Welcome!</h2>
+          <p>This is the front page! Here you can navigate to the other pages.</p>
+          <p>Click on one of these links to navigate</p>
+          <p><a href="#about">About</a> | <a href="#disclaimer">Disclaimer</a>| <a href="#uefiwuui">Page not existing</a></p>
+        </section>
+        <section id="page_about" class="main-content hidden">
+          <h2>About this site</h2>
+          <p>This is the about page</p>
+          <p>This Web site is produced and operated by the Japanese Ministry of Foreign Affairs and is a site that provides comprehensive information regarding studying in Japan.
+              We will endeavor to provide accurate and up-to-date information. However, considering the massive amount of information contained within this site and the fact that the information must, at times, be gathered and uploaded in a short amount of time so that it can be provided on a timely basis, we cannot hold ourselves liable for all the information provided within the Web site.
+              We therefore ask that you keep this point in mind and use this Web site as a general guide to studying in Japan and ultimately confirm any of the needed information with the parties concerned.<p>
+        </section>
+        <section id="page_disclaimer" class="main-content hidden">
+          <h2>Disclaimer</h2>
+          <p>This is the disclaimer page</p>
+          <h3>Applicability</h3>
+          <p>The conditions of this disclaimer apply to visiting and using the website (RAI.NL) of RAI Amsterdam B.V. (referred to below as RAI Amsterdam). By visiting this website and making use of the information provided on it, you acknowledge that these conditions are applicable. If you do not agree to these conditions you should not visit this website or make use of the information provided on this website. RAI Amsterdam would point out to you that these conditions may be altered at any time and therefore recommends that you check this disclaimer regularly.</p>
+          <h3>Liability</h3>
+          <p>The content of this website is intended only for general informational purposes. Although every care has been taken in compiling the information RAI Amsterdam does not warrant that the information on the website is correct, complete or up to date. The information posted on the website may be changed by RAI Amsterdam at any time and no further notice need be given of any such changes.</p>
+          <p>RAI Amsterdam will in any event not be liable for any loss or damage as a result of the use of the website, including – but not limited to – loss or damage as a consequence of viruses or bugs or the incorrectness or incompleteness of the information, unless the loss or damage is a consequence of intent or gross negligence on the part of RAI Amsterdam. Nor is RAI Amsterdam responsible or liable for the contents or reliability of any other websites to which we provide a link.</p>
+        </section>
+      </div>                    
+    </div>
+  </div>
+
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+  <script src="femtocms.js"></script>
+  <script>
+    $(document).ready(function() {
+      // CMS hooks
+      function onNavigate(hash) {
+        $('.menu-content span').each(function(i, span) {
+          $(span).removeClass('menu-highlighted');
+        });
+        $('#menu_' + hash).addClass('menu-highlighted');
+        $('#tagline').html('You are on ' +hash);
+      }
+
+      // Return information of functional pages
+      function getRSSPages(pageId = null) {
+        // Return only page IDs
+        if (pageId == null) {
+          return  ['whatsNew', 'test']
+        }
+        if (pageId == 'whatsNew') {
+          return '<h2>What\'s new</h2>';
+        }
+        else if (pageId == 'test') {
+          return '<h2>Test</h2>';
+        }
+        else
+        return null;
+      }
+
+      // Boot the CMS!
+      FemtoCMS.boot({
+        debug: true,
+        onNavigate: onNavigate,
+        pageId404: '404',
+        pages: [
+          {
+            type: 'firebase',
+            scan: 'all',
+            path: '',
+            preload: true,
+            sectionClass: 'main-content hidden'
+          },
+          {
+            type: 'functional',
+            function: getRSSPages,
+            preload: true
+          }
+        ]
+      });
+    });
+  </script>
+</body>
