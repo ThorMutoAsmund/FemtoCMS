@@ -7,3 +7,11 @@ Language support
 Dynamically updating pages (e.g. showing the result of a database that changes)
 
 Caching
+
+Routing as plugin
+
+Plugins calling eachother
+
+"require" functionality for e.g. firebase (so that dynamix pages can require firebase and the js is only included once)
+
+Firebase with many different databases
