@@ -4,8 +4,8 @@
   <meta charset='utf-8'>
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="viewport" content="width=device-width,maximum-scale=2">
-  <meta name="description" content="spanav demo">
-  <title>SPANAV - Demo</title>
+  <meta name="description" content="femtocms demo">
+  <title>FemtoCMS - Demo</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -14,13 +14,16 @@
     <div class="content">
       <div class="header_wrap">
         <header class="header_wrap_inner">
-          <h1 class="project_title">SPANAV demo</h1>
+          <h1 class="project_title">FemtoCMS demo</h1>
           <h2 id="tagline" class="project_tagline">Front page</h2>
         </header>
       </div>
-      <div class="main_content_wrap">
+      <div id="page_container" class="main_content_wrap">
         <div class="menu-content">
-          <span id="menu_index"><a href="#">Welcome</a></span><span id="menu_about"><a href="#about">About</a></span><span id="menu_disclaimer"><a href="#disclaimer">Disclaimer</a></span>
+          <span id="menu_index"><a href="#">Welcome</a></span>
+          <span id="menu_about"><a href="#about">About</a></span>
+          <span id="menu_disclaimer"><a href="#disclaimer">Disclaimer</a></span>
+          <span id="menu_photos"><a href="#photos">Photos</a></span>
         </div>
         <section id="page_404" class="main-content hidden">
             <h2>404 Page Not Found</h2>
@@ -56,9 +59,20 @@
     src="https://code.jquery.com/jquery-3.3.1.js"
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
-  <script src="femtocms.js"></script>
+  <script 
+    src="https://www.gstatic.com/firebasejs/5.0.2/firebase.js"></script>
+  <script 
+    src="femtocms/femtocms.js"></script>
+  <script 
+    src="femtocms/dynamicpages.js"></script>
+  <script 
+    src="demo_photos.js"></script>
   <script>
     $(document).ready(function() {
+      // var staticPageIds = $('section').map((i, section) => {
+      //   return $(section).attr('id');
+      // }).get();
+      
       // CMS hooks
       function onNavigate(hash) {
         $('.menu-content span').each(function(i, span) {
@@ -68,20 +82,12 @@
         $('#tagline').html('You are on ' +hash);
       }
 
-      // Return information of functional pages
-      function getRSSPages(pageId = null) {
-        // Return only page IDs
-        if (pageId == null) {
-          return  ['whatsNew', 'test']
-        }
-        if (pageId == 'whatsNew') {
-          return '<h2>What\'s new</h2>';
-        }
-        else if (pageId == 'test') {
-          return '<h2>Test</h2>';
-        }
-        else
-        return null;
+      // Page parts
+      try {
+        var photos = new DemoPhotos();
+      }
+      catch (msg) {
+        console.log('Error starting site: ' + msg);
       }
 
       // Boot the CMS!
@@ -89,20 +95,26 @@
         debug: true,
         onNavigate: onNavigate,
         pageId404: '404',
-        pages: [
-          {
-            type: 'firebase',
-            scan: 'all',
-            path: '',
-            preload: true,
-            sectionClass: 'main-content hidden'
-          },
-          {
-            type: 'functional',
-            function: getRSSPages,
-            preload: true
+        plugins: [
+          { 
+            name: 'dynamicPages',
+            pageContainerId: 'page_container',
+            pages: [
+              // {
+              //   type: 'firebase',
+              //   scan: 'all',
+              //   path: '',
+              //   preload: true,
+              //   sectionClass: 'main-content hidden'
+              // },
+              {
+                type: 'functional',
+                onGetPageAsync: photos.getPageAsync.bind(photos),
+                preload: true
+              }
+            ]
           }
-        ]
+        ]        
       });
     });
   </script>
