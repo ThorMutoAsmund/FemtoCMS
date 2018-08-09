@@ -15,3 +15,9 @@ Plugins calling eachother
 "require" functionality for e.g. firebase (so that dynamix pages can require firebase and the js is only included once)
 
 Firebase with many different databases
+
+Everything with promises!
+
+Fix the calls that include "page_" in the name
+
+Two pages with same pageid are not necessarily the same (because of parameters)
