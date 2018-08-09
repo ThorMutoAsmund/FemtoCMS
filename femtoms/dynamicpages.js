@@ -10,11 +10,13 @@ class DynamicPages {
     return page.onGetPageAsync();
   }
 
-  loadFunctionalPageAsync(page, pageId) {
-    return page.onGetPageAsync(pageId).then(sectionContent => {
+  loadFunctionalPageAsync(page, pageId, parameters) {
+    this.debug('Fetching dynamic page: ' + pageId);
+    return page.onGetPageAsync(pageId, parameters).then(sectionContent => {
       var html = '<section id="'+pageId+'" class="main-content hidden">'+sectionContent+'</section>';
       $(this.pageContainer).append(html);
-      this.debug('Fetching dynamic page: ' + pageId);
+    }, () => {
+      this.debug('Page with id ' + pageId +' could not be handled');
     });
   }
 
@@ -26,7 +28,11 @@ class DynamicPages {
     throw('Page type firebase not implemented');
   }
 
-  loadFirebasePageAsync(page, pageId) {
+  loadFirebasePageAsync(page, pageId, parameters) {
+    if (!firebase) {
+      throw('Firebase not loaded');  
+    }
+
     throw('Page type firebase not implemented');
   }
 

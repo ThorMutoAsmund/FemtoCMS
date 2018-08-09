@@ -18,8 +18,9 @@ class FemtoCMS {
       
     // Navigation by clicking
     $('a').on('click', (el) => {
-      var hash = $(el.target).attr('href').replace(/^#/, '');
-      this.navigateTo(hash);
+      var fragment = $(el.target).attr('href').replace(/^#/, '');
+      var [pageId, parameters] = this.splitFragment(fragment);
+      this.navigateTo(pageId, parameters);
     });
         
     // Load dynamic plugins
@@ -32,7 +33,7 @@ class FemtoCMS {
     this.navigateToHash();
   }
 
-  navigateTo(hash) {
+  navigateTo(hash, parameters = []) {
     this.loaded.then(() => {
       hash = (hash == '' ? this.options.pageIdIndex : hash);
       var id = this.options.pageIdPrefix + hash;
@@ -52,7 +53,7 @@ class FemtoCMS {
         var onFetchPage = this.fetchPageCallbacks[id];
 
         if (onFetchPage) {
-          pageLoaded = onFetchPage(id);
+          pageLoaded = onFetchPage(id, parameters);
         }
         else {
           hash = this.options.pageId404;
@@ -87,20 +88,29 @@ class FemtoCMS {
     });
   }
 
+  splitFragment(fragment) {
+    var fragmentSplit = fragment.split('/');      
+    var pageId = (fragmentSplit[0] == '' ? this.options.pageIdIndex : fragmentSplit[0]);      
+    pageId = pageId.replace(/[^-a-zA-Z0-9_:.]+/g, '');
+
+    return [pageId, fragmentSplit.slice(1)];
+}
+
   navigateToHash() {
     setTimeout(() => {
-      var hash = location.hash.replace(/^#/, '');
-      hash = (hash == '' ? this.options.pageIdIndex : hash);
-      var id = this.options.pageIdPrefix + hash;
-      var currentId = null;        
+      var fragment = location.hash.replace(/^#/, '');
+      var [pageId, parameters] = this.splitFragment(fragment);
+      var domId = this.options.pageIdPrefix + pageId;
+
+      var currentDOMId = null;        
       $('section').each((i, section) => {
         if (!$(section).hasClass('hidden')) {
           currentId = $(section).attr('id');
         }
       });
             
-      if (currentId == null || id != currentId) {
-        this.navigateTo(hash);
+      if (currentDOMId == null || domId != currentDOMId) {
+        this.navigateTo(pageId, parameters);
       }
     }, 10);
   }
